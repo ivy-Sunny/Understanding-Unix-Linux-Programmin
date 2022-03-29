@@ -20,6 +20,8 @@ typedef struct utmp utmp;
 
 void show_info(utmp *p_utmp);
 
+void showtime(time_t *timeval);
+
 int main(int argc, char const *argv[]) {
     utmp current_record;
     int utmp_fd, record_len = sizeof(current_record);
@@ -60,14 +62,28 @@ void show_info(utmp *p_utmp) {
     printf("\t");    /* a space */
     printf("%-8.8s", p_utmp->ut_line);    /* the tty */
     printf("\t");    /* a space */
-    char *ct = ctime(&p_utmp->ut_time);
+/*    char *ct = ctime(&p_utmp->ut_time);
     char *buf[20];
-    memcpy(buf, ct, 20);
-    printf("%s", buf);    /* login time */
+    memcpy(buf, ct, 20);*/
+    //printf("%s", buf);    /* login time */
+    showtime(&p_utmp->ut_time);
     printf("\t");   /* a space */
 #ifdef SHOWHOST
     printf("%s", p_utmp->ut_host);
 #endif
     printf("\n");   /* new line */
+}
+
+/*
+ * displays time in a format fit for human consumption
+ * uses ctime to build a string then picks parts out of it
+ * Note: %12.12s prints a string 12 chars wide and LIMITS.  it to 12chars.
+ */
+void showtime(time_t *timeval) {
+    char *cp;   /* to hold address of time */
+    cp = ctime(timeval);    /* convert time to string */
+
+    printf("%12.12s", cp + 4);
+
 }
 
